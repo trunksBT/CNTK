@@ -84,8 +84,7 @@ private:
 
     CropType ParseCropType(const std::string &src);
     RatioJitterType ParseJitterType(const std::string &src);
-    cv::Rect GetCropRect(CropType type, int viewIndex, int crow, int ccol, double cropRatio,
-                         std::mt19937 &rng);
+    cv::Rect GetCropRect(CropType type, int viewIndex, int crow, int ccol, double cropRatio, std::mt19937 &rng);
 
     conc_stack<std::unique_ptr<std::mt19937>> m_rngs;
     CropType m_cropType;
@@ -131,7 +130,7 @@ private:
     cv::Mat m_meanImg;
 };
 
-// Transpose transformation from HWC to CHW.
+// Transpose transformation from HWC to CHW (note: row-major notation).
 class TransposeTransformer : public Transformer
 {
 public:
@@ -203,6 +202,5 @@ private:
     conc_stack<std::unique_ptr<std::mt19937>> m_rngs;
     conc_stack<std::unique_ptr<cv::Mat>> m_hsvTemp;
 };
-
 
 }}}
