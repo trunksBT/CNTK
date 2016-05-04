@@ -69,7 +69,5 @@ private:
     bool m_grayscale;
 };
 
-std::vector<std::string> GetSectionsWithParameter(const ConfigParameters& config, const std::string& parameterName);
-
 typedef std::shared_ptr<ImageConfigHelper> ImageConfigHelperPtr;
 } } }
