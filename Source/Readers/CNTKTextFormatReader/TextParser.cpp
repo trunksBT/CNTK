@@ -66,7 +66,11 @@ struct TextParser<ElemType>::StreamInfo
 };
 
 template <class ElemType>
-TextParser<ElemType>::TextParser(const TextConfigHelper& helper) :
+TextParser<ElemType>::TextParser(const TextConfigHelper& helper) : TextParser(std::make_shared<CorpusDescriptor>(), helper)
+{}
+
+template <class ElemType>
+TextParser<ElemType>::TextParser(CorpusDescriptorPtr corpus, const TextConfigHelper& helper) :
 TextParser(helper.GetFilePath(), helper.GetStreams())
 {
     SetTraceLevel(helper.GetTraceLevel());
@@ -75,8 +79,9 @@ TextParser(helper.GetFilePath(), helper.GetStreams())
     SetChunkSize(helper.GetChunkSize());
     SetSkipSequenceIds(helper.ShouldSkipSequenceIds());
 
-    Initialize();
+    Initialize(corpus);
 }
+
 
 template <class ElemType>
 TextParser<ElemType>::TextParser(const std::wstring& filename, const vector<StreamDescriptor>& streams) : 
@@ -145,7 +150,7 @@ void TextParser<ElemType>::PrintWarningNotification()
 }
 
 template <class ElemType>
-void TextParser<ElemType>::Initialize()
+void TextParser<ElemType>::Initialize(CorpusDescriptorPtr corpus)
 {
     if (m_indexer != nullptr)
     {
@@ -165,9 +170,9 @@ void TextParser<ElemType>::Initialize()
 
     m_indexer = make_unique<Indexer>(m_file, m_skipSequenceIds, m_chunkSizeBytes);
 
-    attempt(m_numRetries, [this]()
+    attempt(m_numRetries, [this, corpus]()
     {
-        m_indexer->Build();
+        m_indexer->Build(corpus);
     });
 
     // it's still possible that the actual input data does not have sequence id column.
