@@ -48,6 +48,17 @@ public:
         }
     }
 
+    // Get integer id for the string value, adding if not exists.
+    size_t operator[](const TString& value)
+    {
+        const auto& it = m_values.find(value);
+        if (it == m_values.end())
+        {
+            return AddValue(value);
+        }
+        return it->second;
+    }
+
     // Get integer id for the string value.
     size_t operator[](const TString& value) const
     {
